@@ -1,10 +1,12 @@
 package uk.co.danielrendall.asteroids.display;
 
 import javax.swing.*;
-import java.awt.image.*;
 import java.awt.*;
+import java.awt.image.*;
 
 import uk.co.danielrendall.asteroids.game.*;
+import uk.co.danielrendall.mathlib.geom2d.Line;
+import uk.co.danielrendall.mathlib.geom2d.Point;
 
 import java.util.*;
 
@@ -29,8 +31,6 @@ public final class Screen extends JFrame {
 
             Map<Color, SortedSet<Line>> lineMap = new HashMap<Color, SortedSet<Line>>();
 
-            // It is assumed that mySprite is created somewhere else.
-            // This is just an example for passing off the Graphics object.
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, Engine.SCREEN_X, Engine.SCREEN_Y);
 
@@ -38,15 +38,15 @@ public final class Screen extends JFrame {
 
             for (Color color : lineMap.keySet()) {
                 SortedSet<Line> lines = lineMap.get(color);
-                int lastX = 0;
-                int lastY = 0;
+                Point last = new Point(0.0d, 0.0d);
                 for (Line line : lines) {
+                    Point start = line.getStart();
+                    Point end = line.getEnd();
                     g.setColor(color.darker().darker().darker().darker());
-                    g.drawLine(lastX, lastY, line.getX1(), line.getY1());
+                    g.drawLine((int) last.x(), (int)last.y(), (int)start.x(), (int)start.y());
                     g.setColor(color);
-                    g.drawLine(line.getX1(), line.getY1(), line.getX2(), line.getY2());
-                    lastX = line.getX2();
-                    lastY = line.getY2();
+                    g.drawLine((int)start.x(), (int)start.y(), (int)end.x(), (int)end.y());
+                    last = end;
                 }
             }
         } catch (Exception e) {

@@ -1,17 +1,27 @@
 package uk.co.danielrendall.asteroids.game;
 
 import uk.co.danielrendall.asteroids.entities.*;
+import uk.co.danielrendall.mathlib.geom2d.Line;
 
 import java.util.*;
 
-import uk.co.danielrendall.asteroids.display.*;
 
 import java.awt.Color;
-import java.awt.Graphics;
 
 public final class Game {
 
     private List<VectorDrawable> drawables;
+
+    private final Comparator<Line> comparator = new Comparator<Line>() {
+
+        public int compare(Line l1, Line l2) {
+            if (l1.getStart().y() > l2.getStart().y()) return 1;
+            if (l1.getStart().y() < l2.getStart().y()) return -1;
+            if (l1.getStart().x() > l2.getStart().x()) return 1;
+            if (l1.getStart().x() < l2.getStart().x()) return -1;
+            return 0;
+        }
+    };
 
     public Game() {
         drawables = new ArrayList<VectorDrawable>(30);
@@ -32,7 +42,7 @@ public final class Game {
         for (VectorDrawable d : drawables) {
             SortedSet<Line> lines = lineMap.get(d.getColor());
             if (lines == null) {
-                lines = new TreeSet<Line>();
+                lines = new TreeSet<Line>(comparator);
                 lineMap.put(d.getColor(), lines);
             }
             for (Line line : d.getLines()) {

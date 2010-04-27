@@ -3,35 +3,33 @@ package uk.co.danielrendall.asteroids.entities;
 import java.awt.Color;
 import java.util.*;
 
-import uk.co.danielrendall.asteroids.display.*;
+import uk.co.danielrendall.asteroids.display.Engine;
+import uk.co.danielrendall.mathlib.geom2d.Line;
+import uk.co.danielrendall.mathlib.geom2d.Point;
+import uk.co.danielrendall.mathlib.geom2d.Vec;
 
 public final class Asteroid implements VectorDrawable {
 
     private final Color myColor;
-    private final float xPoints[];
-    private final float yPoints[];
+    private final Vec[] pointDisplacements;
     private final int numPoints;
-    private float xPos;
-    private float yPos;
+    private Point pos;
 
-    private float xVel;
-    private float yVel;
+    private Vec vel;
 
+    
     public Asteroid(int size, int numPoints, Color color) {
         myColor = color;
         this.numPoints = numPoints;
         double theta = 2 * Math.PI / (double) numPoints;
-        xPoints = new float[numPoints];
-        yPoints = new float[numPoints];
+        pointDisplacements = new Vec[numPoints];
         for (int i = 0; i < numPoints; i++) {
             double arg = theta * (double) i;
-            xPoints[i] = (float) size * (float) Math.cos(arg) + (float) (Math.random() * 10.0d) - 5.0f;
-            yPoints[i] = (float) size * (float) Math.sin(arg) + (float) (Math.random() * 10.0d) - 5.0f;
+            pointDisplacements[i] = new Vec((double) size * Math.cos(arg) + (Math.random() * 10.0d) - 5.0d,
+                    (double) size *  Math.sin(arg) + (Math.random() * 10.0d) - 5.0d);
         }
-        xPos = (float) (Math.random() * (double) Engine.SCREEN_X);
-        yPos = (float) (Math.random() * (double) Engine.SCREEN_Y);
-        xVel = (float) (Math.random() * 10.0d) - 5.0f;
-        yVel = (float) (Math.random() * 10.0d) - 5.0f;
+        pos = new Point(Math.random() * (double) Engine.SCREEN_X, Math.random() * (double) Engine.SCREEN_Y);
+        vel = new Vec((Math.random() * 10.0d) - 5.0f, (Math.random() * 10.0d) - 5.0f);
     }
 
     public Color getColor() {
@@ -40,24 +38,28 @@ public final class Asteroid implements VectorDrawable {
 
     public List<Line> getLines() {
         List<Line> lines = new ArrayList<Line>(numPoints);
-        float lastX = xPos + xPoints[numPoints - 1];
-        float lastY = yPos + yPoints[numPoints - 1];
+
+        Point lastPos = pos.displace(pointDisplacements[numPoints - 1]);
+
         for (int i = 0; i < numPoints; i++) {
-            float thisX = xPos + xPoints[i];
-            float thisY = yPos + yPoints[i];
-            lines.add(new Line(lastX, lastY, thisX, thisY));
-            lastX = thisX;
-            lastY = thisY;
+            Point thisPos = pos.displace(pointDisplacements[i]);
+            lines.add(new Line(lastPos, thisPos));
+            lastPos = thisPos;
         }
         return lines;
     }
 
     public void update() {
-        xPos += xVel;
-        yPos += yVel;
-        if (xPos < 0) xPos += Engine.SCREEN_X;
-        if (xPos >= Engine.SCREEN_X) xPos -= Engine.SCREEN_X;
-        if (yPos < 0) yPos += Engine.SCREEN_Y;
-        if (yPos >= Engine.SCREEN_Y) yPos -= Engine.SCREEN_Y;
+        pos = pos.displace(vel);
+        if (pos.x() < 0.0d) {
+            pos = pos.displace(SCREEN_SHIFT_X);
+        } else if (pos.x() > Engine.SCREEN_X) {
+            pos = pos.displace(SCREEN_SHIFT_MINUS_X);
+        }
+        if (pos.y() < 0.0d) {
+            pos = pos.displace(SCREEN_SHIFT_Y);
+        } else if (pos.y() > Engine.SCREEN_Y) {
+            pos = pos.displace(SCREEN_SHIFT_MINUS_Y);
+        }
     }
 }
