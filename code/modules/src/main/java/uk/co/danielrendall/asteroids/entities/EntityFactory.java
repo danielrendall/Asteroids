@@ -57,7 +57,7 @@ public class EntityFactory {
         Vec vel = new Vec(velocitySpace.randomPoint());
         Shape shape = createAsteroidShape(size.getRadius(), size.getCrinkliness(), size.getPoints());
         double angularVelocity = Math.random() * MAX_ANGULAR_VELOCITY - (MAX_ANGULAR_VELOCITY / 2.0d);
-        Entity ret = new BasicEntity(pos, vel, Vec.ZERO, Math.random() * Shape.TWO_PI, angularVelocityx ..);
+        Entity ret = new BasicEntity(pos, vel, Vec.ZERO, Math.random() * Shape.TWO_PI, angularVelocity);
         ret.setRepresentation(shape);
         ret.setColor(size.getInitialColor());
         return ret;
