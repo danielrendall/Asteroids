@@ -1,6 +1,10 @@
 package uk.co.danielrendall.asteroids.game;
 
-import uk.co.danielrendall.asteroids.entities.*;
+import uk.co.danielrendall.asteroids.display.Engine;
+import uk.co.danielrendall.asteroids.entities.Drawable;
+import uk.co.danielrendall.asteroids.entities.Entity;
+import uk.co.danielrendall.asteroids.entities.EntityFactory;
+import uk.co.danielrendall.asteroids.entities.Shape;
 import uk.co.danielrendall.mathlib.geom2d.Line;
 
 import java.util.*;
@@ -10,7 +14,9 @@ import java.awt.Color;
 
 public final class Game {
 
-    private List<VectorDrawable> drawables;
+    private List<Entity> entities;
+
+    private final EntityFactory factory = new EntityFactory();
 
     private final Comparator<Line> comparator = new Comparator<Line>() {
 
@@ -24,29 +30,30 @@ public final class Game {
     };
 
     public Game() {
-        drawables = new ArrayList<VectorDrawable>(30);
+        entities = new ArrayList<Entity>(30);
         for (int i = 0; i < 10; i++) {
-            drawables.add(new Asteroid(20, i + 5, Color.GREEN));
-            drawables.add(new Asteroid(10, i + 5, Color.BLUE));
-            drawables.add(new Asteroid(5, i + 5, Color.RED));
+            entities.add(factory.createAsteroid(Engine.BOUNDS, EntityFactory.AsteroidSize.LARGE));
+            entities.add(factory.createAsteroid(Engine.BOUNDS, EntityFactory.AsteroidSize.MEDIUM));
+            entities.add(factory.createAsteroid(Engine.BOUNDS, EntityFactory.AsteroidSize.SMALL));
         }
     }
 
     public void update() {
-        for (VectorDrawable d : drawables) {
-            d.update();
+        for (Entity e : entities) {
+            e.update();
         }
     }
 
     public void addLines(Map<Color, SortedSet<Line>> lineMap) {
-        for (VectorDrawable d : drawables) {
-            SortedSet<Line> lines = lineMap.get(d.getColor());
-            if (lines == null) {
-                lines = new TreeSet<Line>(comparator);
-                lineMap.put(d.getColor(), lines);
-            }
-            for (Line line : d.getLines()) {
-                lines.add(line);
+        for (Entity e: entities) {
+            Drawable[] drawables = e.getDrawables();
+            SortedSet<Line> lines = lineMap.get(e.getColor());
+            for (Drawable d: drawables) {
+                if (lines == null) {
+                    lines = new TreeSet<Line>(comparator);
+                    lineMap.put(e.getColor(), lines);
+                }
+                lines.addAll(Arrays.asList(d.getLines()));
             }
         }
     }
