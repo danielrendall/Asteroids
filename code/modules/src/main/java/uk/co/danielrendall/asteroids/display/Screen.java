@@ -9,8 +9,11 @@ import uk.co.danielrendall.mathlib.geom2d.Line;
 import uk.co.danielrendall.mathlib.geom2d.Point;
 
 import java.util.*;
+import java.util.List;
 
 public final class Screen extends JFrame {
+
+    private Point last;
 
     public Screen() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -19,6 +22,7 @@ public final class Screen extends JFrame {
         this.setVisible(true);
 
         this.createBufferStrategy(2);
+        last = Point.ORIGIN;
     }
 
     public void draw(Game game) {
@@ -29,25 +33,13 @@ public final class Screen extends JFrame {
         try {
             g = bf.getDrawGraphics();
 
-            Map<Color, SortedSet<Line>> lineMap = new HashMap<Color, SortedSet<Line>>();
-
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, Engine.SCREEN_X, Engine.SCREEN_Y);
 
-            game.addLines(lineMap);
+            List<Command> commands = game.getDrawCommands();
 
-            for (Color color : lineMap.keySet()) {
-                SortedSet<Line> lines = lineMap.get(color);
-                Point last = new Point(0.0d, 0.0d);
-                for (Line line : lines) {
-                    Point start = line.getStart();
-                    Point end = line.getEnd();
-                    g.setColor(color.darker().darker().darker().darker());
-                    g.drawLine((int) last.x(), (int)last.y(), (int)start.x(), (int)start.y());
-                    g.setColor(color);
-                    g.drawLine((int)start.x(), (int)start.y(), (int)end.x(), (int)end.y());
-                    last = end;
-                }
+            for (Command command: commands) {
+                last = command.accept(g, last);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,6 +1,9 @@
 package uk.co.danielrendall.asteroids.game;
 
+import uk.co.danielrendall.asteroids.display.Command;
+import uk.co.danielrendall.asteroids.display.DisplayStrategy;
 import uk.co.danielrendall.asteroids.display.Engine;
+import uk.co.danielrendall.asteroids.display.SimpleStrategy;
 import uk.co.danielrendall.asteroids.entities.Drawable;
 import uk.co.danielrendall.asteroids.entities.Entity;
 import uk.co.danielrendall.asteroids.entities.EntityFactory;
@@ -17,6 +20,8 @@ public final class Game {
     private List<Entity> entities;
 
     private final EntityFactory factory = new EntityFactory();
+
+    private final DisplayStrategy displayStrategy = new SimpleStrategy();
 
     private final Comparator<Line> comparator = new Comparator<Line>() {
 
@@ -44,17 +49,11 @@ public final class Game {
         }
     }
 
-    public void addLines(Map<Color, SortedSet<Line>> lineMap) {
+    public List<Command> getDrawCommands() {
+        ArrayList<Drawable> drawables = new ArrayList<Drawable>();
         for (Entity e: entities) {
-            Drawable[] drawables = e.getDrawables();
-            SortedSet<Line> lines = lineMap.get(e.getColor());
-            for (Drawable d: drawables) {
-                if (lines == null) {
-                    lines = new TreeSet<Line>(comparator);
-                    lineMap.put(e.getColor(), lines);
-                }
-                lines.addAll(Arrays.asList(d.getLines()));
-            }
+            drawables.addAll(Arrays.asList(e.getDrawables()));
         }
+        return displayStrategy.getCommands(drawables);
     }
 }

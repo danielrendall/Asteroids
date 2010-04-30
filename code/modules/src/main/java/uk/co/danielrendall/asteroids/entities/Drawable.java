@@ -3,6 +3,8 @@ package uk.co.danielrendall.asteroids.entities;
 import uk.co.danielrendall.mathlib.geom2d.BoundingBox;
 import uk.co.danielrendall.mathlib.geom2d.Line;
 
+import java.awt.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: daniel
@@ -14,4 +16,6 @@ public interface Drawable {
     Line[] getLines();
 
     BoundingBox getBoundingBox();
+
+    Color getColor();
 }

@@ -41,7 +41,7 @@ public class BasicShape implements Shape {
                 lines[i] =  new Line(last, point);
                 last = point;
             }
-            drawables[0] = new BasicDrawable(lines, boundingBox);
+            drawables[0] = new BasicDrawable(lines, boundingBox, entity.getColor());
 //        }
         // TODO - proper clipping
         return drawables;

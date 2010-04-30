@@ -17,10 +17,12 @@ import java.awt.Color;
 public class BasicDrawable implements Drawable{
     private final Line[] lines;
     private final BoundingBox boundingBox;
+    private final Color color;
 
-    public BasicDrawable(Line[] lines, BoundingBox boundingBox) {
+    public BasicDrawable(Line[] lines, BoundingBox boundingBox, Color color) {
         this.lines = lines;
         this.boundingBox = boundingBox;
+        this.color = color;
     }
 
     public Line[] getLines() {
@@ -29,5 +31,9 @@ public class BasicDrawable implements Drawable{
 
     public BoundingBox getBoundingBox() {
         return boundingBox;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }
