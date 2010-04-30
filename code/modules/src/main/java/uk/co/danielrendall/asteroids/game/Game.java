@@ -1,9 +1,6 @@
 package uk.co.danielrendall.asteroids.game;
 
-import uk.co.danielrendall.asteroids.display.Command;
-import uk.co.danielrendall.asteroids.display.DisplayStrategy;
-import uk.co.danielrendall.asteroids.display.Engine;
-import uk.co.danielrendall.asteroids.display.SimpleStrategy;
+import uk.co.danielrendall.asteroids.display.*;
 import uk.co.danielrendall.asteroids.entities.Drawable;
 import uk.co.danielrendall.asteroids.entities.Entity;
 import uk.co.danielrendall.asteroids.entities.EntityFactory;
